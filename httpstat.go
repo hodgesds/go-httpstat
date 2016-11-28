@@ -27,7 +27,7 @@ type Result struct {
 	Connect       time.Duration
 	Pretransfer   time.Duration
 	StartTransfer time.Duration
-	total         time.Duration
+	Total         time.Duration
 
 	t0 time.Time
 	t1 time.Time
@@ -56,7 +56,7 @@ func (r *Result) durations() map[string]time.Duration {
 		"Connect":       r.Connect,
 		"Pretransfer":   r.Connect,
 		"StartTransfer": r.StartTransfer,
-		"Total":         r.total,
+		"Total":         r.Total,
 	}
 }
 
@@ -70,7 +70,7 @@ func (r *Result) ContentTransfer(t time.Time) time.Duration {
 // Total returns the duration of total http request.
 // It is from dns lookup start time to the given time. The
 // time must be time after read body (go-httpstat can not detect that time).
-func (r *Result) Total(t time.Time) time.Duration {
+func (r *Result) Totals(t time.Time) time.Duration {
 	return t.Sub(r.t0)
 }
 
@@ -78,7 +78,7 @@ func (r *Result) Total(t time.Time) time.Duration {
 func (r *Result) End(t time.Time) {
 	r.t5 = t
 	r.contentTransfer = r.t5.Sub(r.t4)
-	r.total = r.t5.Sub(r.t0)
+	r.Total = r.t5.Sub(r.t0)
 }
 
 func (r Result) Format(s fmt.State, verb rune) {
@@ -113,7 +113,7 @@ func (r Result) Format(s fmt.State, verb rune) {
 
 			if !r.t5.IsZero() {
 				fmt.Fprintf(&buf, "Total:          %4d ms\n",
-					int(r.total/time.Millisecond))
+					int(r.Total/time.Millisecond))
 			} else {
 				fmt.Fprintf(&buf, "Total:          %4s ms\n", "-")
 			}
